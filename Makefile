@@ -1,24 +1,13 @@
-# ==============================
-# Top-level Makefile
-# ==============================
+# Root Makefile for recursive build
+SUBDIRS = src
 
-# Macros
-CC = gcc
-CFLAGS = -Wall -Iinclude
-SRC_DIR = src
-BIN_DIR = bin
-OBJ_DIR = obj
+all:
+	@for dir in $(SUBDIRS); do \
+		$(MAKE) -C $$dir; \
+	done
 
-# Default target
-all: $(BIN_DIR)/main
-
-# Delegate to src/Makefile
-$(BIN_DIR)/main:
-	$(MAKE) -C $(SRC_DIR)
-
-# Clean everything
 clean:
-	$(MAKE) -C $(SRC_DIR) clean
-	rm -f $(BIN_DIR)/*
+	@for dir in $(SUBDIRS); do \
+		$(MAKE) -C $$dir clean; \
+	done
 
-.PHONY: all clean

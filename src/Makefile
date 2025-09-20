@@ -1,32 +1,32 @@
-# src/Makefile for static library build
+# src/Makefile for dynamic library build
 CC = gcc
 CFLAGS = -Wall -I../include
 OBJDIR = ../obj
 BINDIR = ../bin
 LIBDIR = ../lib
 
-# Object files for the library
+# Object files for the dynamic library
 OBJS = $(OBJDIR)/mystrfunctions.o $(OBJDIR)/myfilefunctions.o
 
 # Target executable
-TARGET = $(BINDIR)/main
+TARGET = $(BINDIR)/client_dynamic
 
 # Default target
-all: $(LIBDIR)/libmyutils.a $(TARGET)
+all: $(LIBDIR)/libmyutils.so $(TARGET)
 
-# Create static library
-$(LIBDIR)/libmyutils.a: $(OBJS)
-	ar rcs $@ $^
-
-# Compile object files
+# Compile object files with -fPIC for dynamic library
 $(OBJDIR)/%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -fPIC -c $< -o $@
 
-# Link main with static library
-$(TARGET): $(OBJDIR)/main.o $(LIBDIR)/libmyutils.a
+# Build dynamic library
+$(LIBDIR)/libmyutils.so: $(OBJS)
+	$(CC) -shared -o $@ $^
+
+# Link main with dynamic library
+$(TARGET): $(OBJDIR)/main.o $(LIBDIR)/libmyutils.so
 	$(CC) $(CFLAGS) -o $@ $(OBJDIR)/main.o -L$(LIBDIR) -lmyutils
 
 # Clean build artifacts
 clean:
-	rm -f $(OBJDIR)/*.o $(BINDIR)/main $(LIBDIR)/libmyutils.a
+	rm -f $(OBJDIR)/*.o $(BINDIR)/client_dynamic $(LIBDIR)/libmyutils.so
 

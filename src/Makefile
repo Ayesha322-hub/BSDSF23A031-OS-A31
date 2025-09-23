@@ -1,32 +1,32 @@
-# src/Makefile for dynamic library build
 CC = gcc
-CFLAGS = -Wall -I../include
+CFLAGS = -Wall -fPIC -I../include
 OBJDIR = ../obj
-BINDIR = ../bin
 LIBDIR = ../lib
+BINDIR = ../bin
 
-# Object files for the dynamic library
+# Object files
 OBJS = $(OBJDIR)/mystrfunctions.o $(OBJDIR)/myfilefunctions.o
 
 # Target executable
 TARGET = $(BINDIR)/client_dynamic
 
-# Default target
 all: $(LIBDIR)/libmyutils.so $(TARGET)
 
-# Compile object files with -fPIC for dynamic library
+# Compile .c into object files
 $(OBJDIR)/%.o: %.c
-	$(CC) $(CFLAGS) -fPIC -c $< -o $@
+	mkdir -p $(OBJDIR)
+	$(CC) $(CFLAGS) -c $< -o $@
 
 # Build dynamic library
 $(LIBDIR)/libmyutils.so: $(OBJS)
+	mkdir -p $(LIBDIR)
 	$(CC) -shared -o $@ $^
 
-# Link main with dynamic library
-$(TARGET): $(OBJDIR)/main.o $(LIBDIR)/libmyutils.so
-	$(CC) $(CFLAGS) -o $@ $(OBJDIR)/main.o -L$(LIBDIR) -lmyutils
+# Build executable
+$(TARGET): main.c $(LIBDIR)/libmyutils.so
+	mkdir -p $(BINDIR)
+	$(CC) main.c -L$(LIBDIR) -lmyutils -o $@ -I../include
 
-# Clean build artifacts
 clean:
-	rm -f $(OBJDIR)/*.o $(BINDIR)/client_dynamic $(LIBDIR)/libmyutils.so
+	rm -f $(OBJDIR)/*.o $(LIBDIR)/*.so $(BINDIR)/client_dynamic
 

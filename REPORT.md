@@ -1,4 +1,4 @@
-1. Explain the linking rule in this part's Makefile: $(TARGET): $(OBJECTS). How does it differ from a Makefile rule that links against a library?
+Q1. Explain the linking rule in this part's Makefile: $(TARGET): $(OBJECTS). How does it differ from a Makefile rule that links against a library?
 
 The rule $(TARGET): $(OBJECTS) means that the final program (the target) is made from the object files. The compiler takes all the object files and combines them into one executable.
 
